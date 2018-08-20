@@ -9,4 +9,5 @@ public class JsonLogReaderApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(JsonLogReaderApplication.class, args);
 	}
+
 }
