@@ -21,6 +21,6 @@ public class CommandLineRunnerBean implements CommandLineRunner {
         } else {
             System.out.println("Please provide the path to the log file");
         }
-        exit(0);
+//        exit(0);
     }
 } 
