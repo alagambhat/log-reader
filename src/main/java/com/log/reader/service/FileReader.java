@@ -23,10 +23,11 @@ public class FileReader {
 
 	public void read(String filePath) throws IOException {
 		try {
-			Files.lines(Paths.get(filePath)).parallel().forEach(logLine -> logLineProcessor.process(logLine));
+			Files.lines(Paths.get(filePath)).forEach(logLine -> logLineProcessor.process(logLine));
 		} catch (IOException e) {
 			logger.error("Exception while reading the file: {}", filePath, e);
 			throw e;
 		}
+
 	}
 }

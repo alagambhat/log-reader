@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.log.reader.db.model.Event;
@@ -29,6 +30,7 @@ public class LogLineProcessor {
 		this.logEventRepository = logEventRepository;
 	}
 
+	@Async
 	public LogEvent process(String logLine) {
 		try {
 			final LogEvent logEntry = JsonConverter.toObject(logLine, LogEvent.class);
@@ -54,11 +56,14 @@ public class LogLineProcessor {
 						previousValue.getId(), duration, THRESHOLD_DELAY);
 				save(entry, duration);
 			}
-			// cleanup garbage
+			// Remove entry as we do not need this anymore 
 			hashMap.remove(entry.getId());
 		}
 	}
-	
+
+	/**
+	 * Store this event to the database.
+	 */
 	private void save(LogEvent entry, Long duration) {
 		Event event = new Event();
 		event.setId(entry.getId());
@@ -68,6 +73,5 @@ public class LogLineProcessor {
 		event.setEventDuration(duration);
 		logEventRepository.save(event);
 	}
-	
 
 }
