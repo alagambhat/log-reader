@@ -31,6 +31,10 @@ public class LogLine {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (!(obj instanceof LogLine)) {
+			return false;
+		}
+
 		return this.id.equals(((LogLine) obj).id);
 	}
 }
