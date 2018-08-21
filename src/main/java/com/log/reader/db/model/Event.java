@@ -1,48 +1,29 @@
 package com.log.reader.db.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Events")
+@Table(name = "events")
 public class Event extends ModelBase {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private String id;
 
-	@Column(name = "Event_id", nullable = false)
-	private String eventId;
-
-	@Column(name = "Event_duration", nullable = false)
 	private String eventDuration;
 
-	@Column(name = "type")
 	private String type;
 
-	@Column(name = "host")
 	private String host;
 
-	@Column(name = "alert")
 	private String alert;
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(String eventId) {
-		this.eventId = eventId;
 	}
 
 	public String getEventDuration() {
