@@ -1,5 +1,8 @@
 package com.log.reader.log.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class LogEvent {
 	private final String id;
 	private final String state;
