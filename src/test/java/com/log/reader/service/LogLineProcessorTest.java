@@ -17,7 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.log.reader.db.model.LogLine;
+import com.log.reader.log.model.LogEvent;
 import com.log.reader.repository.LogEventRepository;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -33,9 +33,23 @@ public class LogLineProcessorTest {
 
 	@Test
 	public void successfulParsing() throws IOException {
-		String logLine = "{\"id\":\"scsmbstgra\", \"state\":\"STARTED\", \"type\":\"APPLICATION_LOG\", \"host\":\"12345\", \"timestamp\":123456789}";
-		LogLine actual = logLineProcessor.process(logLine);
-		assertEquals(new LogLine("scsmbstgra", "STARTED", 123456789L), actual);
+		String logLine = "{\"id\":\"scsmbstgra\", \"state\":\"STARTED\", \"type\":\"APPLICATION_LOG\", \"host\":\"testHost\", \"timestamp\":123456789}";
+		LogEvent actual = logLineProcessor.process(logLine);
+		assertEquals(new LogEvent("scsmbstgra", "STARTED", 123456789L, "testHost", "APPLICATION_LOG"), actual);
+	}
+
+	@Test
+	public void successfulParsingWithoutType() throws IOException {
+		String logLine = "{\"id\":\"scsmbstgra\", \"state\":\"STARTED\", \"host\":\"testHost\", \"timestamp\":123456789}";
+		LogEvent actual = logLineProcessor.process(logLine);
+		assertEquals(new LogEvent("scsmbstgra", "STARTED", 123456789L, "testHost", null), actual);
+	}
+
+	@Test
+	public void successfulParsingWithoutHost() throws IOException {
+		String logLine = "{\"id\":\"scsmbstgra\", \"state\":\"STARTED\", \"type\":\"APPLICATION_LOG\", \"timestamp\":123456789}";
+		LogEvent actual = logLineProcessor.process(logLine);
+		assertEquals(new LogEvent("scsmbstgra", "STARTED", 123456789L, null, "APPLICATION_LOG"), actual);
 	}
 
 	@Test
@@ -47,7 +61,7 @@ public class LogLineProcessorTest {
 	@Test
 	public void failedParsingDoesnotThrowException() throws IOException {
 		String logLine = "()()INVALID_JSON()()";
-		LogLine result = logLineProcessor.process(logLine);
+		LogEvent result = logLineProcessor.process(logLine);
 		assertNull(result);
 	}
 

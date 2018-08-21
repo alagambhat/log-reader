@@ -7,13 +7,13 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 
 @MappedSuperclass
-public class ModelBase {
+public class Base {
 
 	@Column(name = "Created_Date", nullable = false)
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	private Date createdDate = new Date();
 
-	public ModelBase() {
+	public Base() {
 		super();
 	}
 

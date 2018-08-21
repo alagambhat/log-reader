@@ -6,17 +6,17 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "events")
-public class Event extends ModelBase {
+public class Event extends Base {
 	@Id
 	private String id;
 
-	private String eventDuration;
+	private Long eventDuration;
 
 	private String type;
 
 	private String host;
 
-	private String alert;
+	private Boolean alert;
 
 	public String getId() {
 		return id;
@@ -26,11 +26,11 @@ public class Event extends ModelBase {
 		this.id = id;
 	}
 
-	public String getEventDuration() {
+	public Long getEventDuration() {
 		return eventDuration;
 	}
 
-	public void setEventDuration(String eventDuration) {
+	public void setEventDuration(Long eventDuration) {
 		this.eventDuration = eventDuration;
 	}
 
@@ -50,11 +50,11 @@ public class Event extends ModelBase {
 		this.host = host;
 	}
 
-	public String getAlert() {
+	public Boolean getAlert() {
 		return alert;
 	}
 
-	public void setAlert(String alert) {
+	public void setAlert(Boolean alert) {
 		this.alert = alert;
 	}
 

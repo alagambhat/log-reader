@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.log.reader.db.model.Event;
-import com.log.reader.db.model.LogLine;
+import com.log.reader.log.model.LogEvent;
 import com.log.reader.repository.LogEventRepository;
 import com.log.reader.utils.JsonConverter;
 
@@ -20,7 +20,7 @@ public class LogLineProcessor {
 
 	private static final Long THRESHOLD_DELAY = 4L;
 
-	private final ConcurrentMap<String, LogLine> hashMap = new ConcurrentHashMap<>();
+	private final ConcurrentMap<String, LogEvent> hashMap = new ConcurrentHashMap<>();
 
 	private final LogEventRepository logEventRepository;
 
@@ -29,9 +29,9 @@ public class LogLineProcessor {
 		this.logEventRepository = logEventRepository;
 	}
 
-	public LogLine process(String logLine) {
+	public LogEvent process(String logLine) {
 		try {
-			final LogLine logEntry = JsonConverter.toObject(logLine, LogLine.class);
+			final LogEvent logEntry = JsonConverter.toObject(logLine, LogEvent.class);
 			logger.debug("logLine {} is mapped to {}", logLine, logEntry);
 			verifyAndAct(logEntry);
 			return logEntry;
@@ -42,28 +42,30 @@ public class LogLineProcessor {
 	}
 
 	/**
-	 * Checks if the delay is more than threshold. If so write it to the DB.
+	 * Checks if the delay is more than threshold. If so make an entry in the DB.
 	 */
-	public void verifyAndAct(LogLine entry) {
-		final LogLine previousValue = hashMap.putIfAbsent(entry.getId(), entry);
+	public void verifyAndAct(LogEvent entry) {
+		final LogEvent previousValue = hashMap.putIfAbsent(entry.getId(), entry);
 		if (previousValue != null) {
 			logger.trace("Match found: {}", previousValue);
 			long duration = Math.abs(previousValue.getTimestamp() - entry.getTimestamp());
 			if (duration > THRESHOLD_DELAY) {
 				logger.debug("duration for id: {} is {} ms which is more than the Threshold {} ms",
 						previousValue.getId(), duration, THRESHOLD_DELAY);
-				save(entry);
+				save(entry, duration);
 			}
 			// cleanup garbage
 			hashMap.remove(entry.getId());
 		}
 	}
 	
-	private void save(LogLine entry) {
+	private void save(LogEvent entry, Long duration) {
 		Event event = new Event();
 		event.setId(entry.getId());
-		event.setAlert("true");
-//		event.setHost(entry.getHost());
+		event.setAlert(Boolean.TRUE);
+		event.setHost(entry.getHost());
+		event.setType(event.getType());
+		event.setEventDuration(duration);
 		logEventRepository.save(event);
 	}
 	
