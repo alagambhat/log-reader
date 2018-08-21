@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.log.reader.db.model.Event;
 import com.log.reader.repository.LogEventRepository;
+import com.log.reader.service.LogLineParser;
 
 @Component
 public class CommandLineRunnerBean implements CommandLineRunner {
@@ -18,6 +19,9 @@ public class CommandLineRunnerBean implements CommandLineRunner {
 
 	@Autowired
 	LogEventRepository logEventRepository;
+
+	@Autowired
+	LogLineParser logLineParser;
 
 	public void run(String... args) {
 
@@ -27,14 +31,13 @@ public class CommandLineRunnerBean implements CommandLineRunner {
 		} else {
 			System.out.println("Please provide the path to the log file");
 		}
-		
+
 		Event event = new Event();
 		event.setEventDuration("12345");
 		event.setId("77777");
-		
+
 		logEventRepository.save(event);
-		
-		
+
 		// exit(0);
 	}
 }
