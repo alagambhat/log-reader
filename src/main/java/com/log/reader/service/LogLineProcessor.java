@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.log.reader.db.model.Event;
@@ -43,8 +42,7 @@ public class LogLineProcessor {
 	}
 
 	/**
-	 * Checks if the delay is more than threshold. If so send the event to write it
-	 * to the DB.
+	 * Checks if the delay is more than threshold. If so write it to the DB.
 	 */
 	public void verifyAndAct(LogLine entry) {
 		final LogLine previousValue = hashMap.putIfAbsent(entry.getId(), entry);

@@ -21,12 +21,7 @@ public class ReaderController {
 	@Autowired
 	LogEventRepository logEventRepository;
 
-	@GetMapping("/")
-	public String getResourceDetails() {
-		return this.getClass().getSimpleName();
-	}
-
-	@GetMapping("/fetchall")
+	@GetMapping("/all")
 	public List<Event> fetchAll() {
 		final List<Event> result = logEventRepository.findAll();
 		logger.debug("Fetch all returned {} results", result.size());

@@ -46,7 +46,7 @@ public class LogLineProcessorTest {
 
 	@Test
 	public void failedParsingDoesnotThrowException() throws IOException {
-		String logLine = "!£$%^&*()";
+		String logLine = "()()INVALID_JSON()()";
 		LogLine result = logLineProcessor.process(logLine);
 		assertNull(result);
 	}
