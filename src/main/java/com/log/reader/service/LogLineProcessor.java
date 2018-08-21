@@ -8,11 +8,11 @@ import com.log.reader.db.model.LogLine;
 import com.log.reader.utils.JsonConverter;
 
 @Component
-public class LogLineParser {
+public class LogLineProcessor {
 
-	private static final Logger logger = LoggerFactory.getLogger(LogLineParser.class);
+	private static final Logger logger = LoggerFactory.getLogger(LogLineProcessor.class);
 
-	public LogLine parse(String logLine) {
+	public LogLine process(String logLine) {
 		try {
 			final LogLine logEntry = JsonConverter.toObject(logLine, LogLine.class);
 			logger.debug("logLine {} is mapped to {}", logLine, logEntry);

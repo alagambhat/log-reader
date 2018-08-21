@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.log.reader.db.model.Event;
 import com.log.reader.repository.LogEventRepository;
-import com.log.reader.service.LogLineParser;
+import com.log.reader.service.LogLineProcessor;
 
 @Component
 public class CommandLineRunnerBean implements CommandLineRunner {
@@ -21,7 +21,7 @@ public class CommandLineRunnerBean implements CommandLineRunner {
 	LogEventRepository logEventRepository;
 
 	@Autowired
-	LogLineParser logLineParser;
+	LogLineProcessor logLineParser;
 
 	public void run(String... args) {
 

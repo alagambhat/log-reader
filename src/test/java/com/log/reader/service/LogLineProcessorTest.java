@@ -14,9 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.log.reader.db.model.LogLine;
 
 @RunWith(MockitoJUnitRunner.class)
-public class LogLineParserTest {
+public class LogLineProcessorTest {
 	@InjectMocks
-	private LogLineParser logLineParser;
+	private LogLineProcessor logLineParser;
 
 	@Mock
 	private ObjectMapper objectMapper;
@@ -24,7 +24,7 @@ public class LogLineParserTest {
 	@Test
 	public void successfulParsing() throws IOException {
 		String logLine = "{\"id\":\"scsmbstgra\", \"state\":\"STARTED\", \"type\":\"APPLICATION_LOG\", \"host\":\"12345\", \"timestamp\":123456789}";
-		LogLine actual = logLineParser.parse(logLine);
+		LogLine actual = logLineParser.process(logLine);
 		assertEquals(new LogLine("scsmbstgra", "STARTED", 123456789L), actual);
 	}
 
