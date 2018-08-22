@@ -1,7 +1,7 @@
 package com.log.reader.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,12 +11,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.log.reader.db.model.Event;
 import com.log.reader.repository.LogEventRepository;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
 		"job.autorun.enabled=false" })
 public class ReaderControllerTest {
@@ -44,9 +44,8 @@ public class ReaderControllerTest {
 	public void testDataStoredinDb() throws Exception {
 		save();
 		String url = "http://localhost:" + port + "/read/all";
-		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-		assertTrue(response.getBody().contains(
-				"\"id\":\"12345\",\"eventDuration\":8,\"type\":\"dummyType\",\"host\":\"dummyHost\",\"alert\":true}"));
+		assertThat(this.restTemplate.getForObject(url, String.class)).contains(
+				"\"id\":\"12345\",\"eventDuration\":8,\"type\":\"dummyType\",\"host\":\"dummyHost\",\"alert\":true}");
 	}
 
 	private void save() {

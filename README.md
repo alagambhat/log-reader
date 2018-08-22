@@ -1,8 +1,15 @@
 # log-reader
+You can build, test and run by the following command on windows:
 
-You can build, run and test by the following command on windows:
+build:
+gradlew.bat build
 
-gradlew.bat build && java -jar build\libs\json-log-reader-1.0.1-SNAPSHOT.jar [path to the log file]
+test:
+gradlew.bat test
+
+run:
+java -jar build\libs\demo-0.1.0.jar [path to the log file]
+Example: java -jar build\libs\demo-0.1.0.jar samples\sample.log
 
 Access the flagged file entry in DB using the rest end point in your browser: http://localhost:8181/read/all 
 (or using curl command example: 'curl http://localhost:8181/read/all')
