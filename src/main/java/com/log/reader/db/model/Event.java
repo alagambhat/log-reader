@@ -7,6 +7,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "events")
 public class Event extends Base {
+
 	@Id
 	private String id;
 
@@ -70,6 +71,12 @@ public class Event extends Base {
 	@Override
 	public int hashCode() {
 		return this.id.hashCode();
+	}
+	
+	@Override
+	public String toString() {
+		return "Event [id=" + id + ", eventDuration=" + eventDuration + ", type=" + type + ", host=" + host + ", alert="
+				+ alert + "]";
 	}
 
 }

@@ -23,11 +23,11 @@ public class LogLineProcessor {
 
 	private final ConcurrentMap<String, LogEvent> hashMap = new ConcurrentHashMap<>();
 
-	private final LogEventRepository logEventRepository;
+	private final DbService dbService;
 
 	@Autowired
-	public LogLineProcessor(LogEventRepository logEventRepository) {
-		this.logEventRepository = logEventRepository;
+	public LogLineProcessor(DbService dbService) {
+		this.dbService = dbService;
 	}
 
 	@Async
@@ -54,24 +54,11 @@ public class LogLineProcessor {
 			if (duration > THRESHOLD_DELAY) {
 				logger.debug("duration for id: {} is {} ms which is more than the Threshold {} ms",
 						previousValue.getId(), duration, THRESHOLD_DELAY);
-				save(entry, duration);
+				dbService.save(entry, duration);
 			}
-			// Remove entry as we do not need this anymore 
+			// Remove entry as we do not need this anymore
 			hashMap.remove(entry.getId());
 		}
-	}
-
-	/**
-	 * Store this event to the database.
-	 */
-	private void save(LogEvent entry, Long duration) {
-		Event event = new Event();
-		event.setId(entry.getId());
-		event.setAlert(Boolean.TRUE);
-		event.setHost(entry.getHost());
-		event.setType(event.getType());
-		event.setEventDuration(duration);
-		logEventRepository.save(event);
 	}
 
 }
