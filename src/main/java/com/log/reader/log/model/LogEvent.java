@@ -22,8 +22,8 @@ public class LogEvent {
 		this.id = id;
 		this.state = state;
 		this.timestamp = timestamp;
-		this.host = host;
 		this.type = type;
+		this.host = host;
 	}
 
 	public String getId() {

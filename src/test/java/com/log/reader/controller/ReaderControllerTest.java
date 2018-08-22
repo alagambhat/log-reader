@@ -14,7 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.log.reader.db.model.Event;
-import com.log.reader.repository.LogEventRepository;
+import com.log.reader.log.model.LogEvent;
+import com.log.reader.service.DbService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
@@ -25,7 +26,7 @@ public class ReaderControllerTest {
 	int port;
 
 	@Autowired
-	private LogEventRepository logEventRepository;
+	private DbService dbService;
 
 	@Autowired
 	private TestRestTemplate restTemplate;
@@ -49,13 +50,8 @@ public class ReaderControllerTest {
 	}
 
 	private void save() {
-		Event event = new Event();
-		event.setId("12345");
-		event.setAlert(Boolean.TRUE);
-		event.setHost("dummyHost");
-		event.setType("dummyType");
-		event.setEventDuration(8L);
-		logEventRepository.save(event);
+		LogEvent entry = new LogEvent("12345", "FINISHED", 7866542314L, "dummyType", "dummyHost");
+		dbService.save(entry, 8L);
 	}
 
 }

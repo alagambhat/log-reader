@@ -12,7 +12,7 @@ import com.log.reader.repository.LogEventRepository;
 @Service
 public class DbService {
 	private final LogEventRepository logEventRepository;
-	private static final Logger logger = LoggerFactory.getLogger(LogLineProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(DbService.class);
 
 	@Autowired
 	public DbService(LogEventRepository logEventRepository) {
@@ -22,12 +22,12 @@ public class DbService {
 	/**
 	 * Store this event to the database.
 	 */
-	protected void save(LogEvent entry, Long duration) {
+	public void save(LogEvent entry, Long duration) {
 		Event event = new Event();
 		event.setId(entry.getId());
 		event.setAlert(Boolean.TRUE);
 		event.setHost(entry.getHost());
-		event.setType(event.getType());
+		event.setType(entry.getType());
 		event.setEventDuration(duration);
 		logger.debug("Saving {} to DB", event);
 		logEventRepository.save(event);
