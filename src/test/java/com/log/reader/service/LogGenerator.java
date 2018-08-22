@@ -18,7 +18,7 @@ public class LogGenerator {
 			String logLineStart = "{\"id\":\"%s\", \"state\":\"STARTED\", \"type\":\"APPLICATION_LOG\", \"host\":\"12345\", \"timestamp\":%s}\n";
 			String logLineFinish = "{\"id\":\"%s\", \"state\":\"FINISHED\", \"type\":\"APPLICATION_LOG\", \"host\":\"12345\", \"timestamp\":%s}\n";
 			Random rand = new Random();
-			for (int id = 100; id < 110; id++) {
+			for (int id = 100; id < 11000; id++) {
 				int randomNum = rand.nextInt(10) + 2;
 				writer.write(String.format(logLineStart, id, start));
 				writer.write(String.format(logLineFinish, id, start + randomNum));

@@ -6,12 +6,9 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.log.reader.db.model.Event;
 import com.log.reader.log.model.LogEvent;
-import com.log.reader.repository.LogEventRepository;
 import com.log.reader.utils.JsonConverter;
 
 @Component
@@ -30,7 +27,6 @@ public class LogLineProcessor {
 		this.dbService = dbService;
 	}
 
-	@Async
 	public LogEvent process(String logLine) {
 		try {
 			final LogEvent logEntry = JsonConverter.toObject(logLine, LogEvent.class);
