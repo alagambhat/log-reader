@@ -6,13 +6,16 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import com.log.reader.db.model.Event;
 import com.log.reader.log.model.LogEvent;
+import com.log.reader.repository.LogEventRepository;
 import com.log.reader.utils.JsonConverter;
 
 @Component
-public class LogLineProcessor {
+public class LogLineProcessor implements ApplicationListener<LogProcessEvent> {
 
 	private static final Logger logger = LoggerFactory.getLogger(LogLineProcessor.class);
 
@@ -20,11 +23,16 @@ public class LogLineProcessor {
 
 	private final ConcurrentMap<String, LogEvent> hashMap = new ConcurrentHashMap<>();
 
-	private final DbService dbService;
+	private final LogEventRepository logEventRepository;
 
 	@Autowired
-	public LogLineProcessor(DbService dbService) {
-		this.dbService = dbService;
+	public LogLineProcessor(LogEventRepository logEventRepository) {
+		this.logEventRepository = logEventRepository;
+	}
+
+	@Override
+	public void onApplicationEvent(LogProcessEvent event) {
+		process(event.getMessage());
 	}
 
 	public LogEvent process(String logLine) {
@@ -50,11 +58,25 @@ public class LogLineProcessor {
 			if (duration > THRESHOLD_DELAY) {
 				logger.debug("duration for id: {} is {} ms which is more than the Threshold {} ms",
 						previousValue.getId(), duration, THRESHOLD_DELAY);
-				dbService.save(entry, duration);
+				save(entry, duration);
 			}
 			// Remove entry as we do not need this anymore
 			hashMap.remove(entry.getId());
 		}
+	}
+
+	/**
+	 * Store this event to the database.
+	 */
+	public void save(LogEvent entry, Long duration) {
+		Event event = new Event();
+		event.setId(entry.getId());
+		event.setAlert(Boolean.TRUE);
+		event.setHost(entry.getHost());
+		event.setType(entry.getType());
+		event.setEventDuration(duration);
+		logger.debug("Saving {} to DB", event);
+		logEventRepository.save(event);
 	}
 
 }

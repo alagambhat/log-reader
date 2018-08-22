@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -20,7 +19,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.log.reader.db.model.Event;
 import com.log.reader.log.model.LogEvent;
+import com.log.reader.repository.LogEventRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LogLineProcessorTest {
@@ -31,7 +32,7 @@ public class LogLineProcessorTest {
 	private ObjectMapper objectMapper;
 
 	@Mock
-	DbService dbService;
+	LogEventRepository logEventRepository;
 
 	@Test
 	public void successfulParsing() throws IOException {
@@ -57,31 +58,29 @@ public class LogLineProcessorTest {
 	@Test
 	public void verifySavedLogEntriesWithHigherThreshold() throws IOException {
 		Files.lines(Paths.get("src/test/resources/sample.log")).forEach(logLine -> logLineProcessor.process(logLine));
-		ArgumentCaptor<LogEvent> logEventCaptor = ArgumentCaptor.forClass(LogEvent.class);
-		ArgumentCaptor<Long> durationCaptor = ArgumentCaptor.forClass(Long.class);
-		verify(dbService, times(2)).save(logEventCaptor.capture(), durationCaptor.capture());
-
-		List<LogEvent> logEvents = logEventCaptor.getAllValues();
-		List<Long> durations = durationCaptor.getAllValues();
-		assertEquals(Arrays.asList(5L, 8L), durations);
-
+		ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+		verify(logEventRepository, times(2)).save(eventCaptor.capture());
+		List<Event> events = eventCaptor.getAllValues();
 		// First Event which is more than 4 ms
-		assertEquals("scsmbstgra", logEvents.get(0).getId());
-		assertEquals("12345", logEvents.get(0).getHost());
-		assertEquals("APPLICATION_LOG", logEvents.get(0).getType());
+		assertEquals("scsmbstgra", events.get(0).getId());
+		assertEquals("12345", events.get(0).getHost());
+		assertEquals("APPLICATION_LOG", events.get(0).getType());
+		assertEquals(new Long(5L), events.get(0).getEventDuration());
 
 		// Second Event which is more than 4 ms
-		assertEquals("scsmbstgrc", logEvents.get(1).getId());
-		assertNull(logEvents.get(1).getHost());
-		assertNull(logEvents.get(1).getType());
+		assertEquals("scsmbstgrc", events.get(1).getId());
+		assertNull(events.get(1).getHost());
+		assertNull(events.get(1).getType());
+		assertEquals(new Long(8L), events.get(1).getEventDuration());
 	}
 
 	@Test
 	public void verifyLogEntriesWithinThresholdLimits() throws IOException {
-		Files.lines(Paths.get("src/test/resources/sample_all_within_limits.log")).forEach(logLine -> logLineProcessor.process(logLine));
-		verify(dbService, times(0)).save(Mockito.any(), Mockito.any());
+		Files.lines(Paths.get("src/test/resources/sample_all_within_limits.log"))
+				.forEach(logLine -> logLineProcessor.process(logLine));
+		verify(logEventRepository, times(0)).save(Mockito.any());
 	}
-	
+
 	@Test
 	public void failedParsingDoesnotThrowException() throws IOException {
 		String logLine = "()()INVALID_JSON()()";

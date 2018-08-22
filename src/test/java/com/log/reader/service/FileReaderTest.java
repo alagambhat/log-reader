@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.context.ApplicationEventPublisher;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileReaderTest {
@@ -18,17 +19,17 @@ public class FileReaderTest {
 	private FileReader fileReader;
 
 	@Mock
-	private LogLineProcessor logLineProcessor;
+	private ApplicationEventPublisher applicationEventPublisher;
 
 	@Before
 	public void setUp() {
-		fileReader = new FileReader(logLineProcessor);
+		fileReader = new FileReader(applicationEventPublisher);
 	}
 
 	@Test
 	public void read() throws IOException {
 		fileReader.read("src/test/resources/sample.log");
-		verify(logLineProcessor, times(6)).process(Mockito.anyString());
+		verify(applicationEventPublisher, times(6)).publishEvent(Mockito.any());
 	}
 
 	@Test(expected = IOException.class)
