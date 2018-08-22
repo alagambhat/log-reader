@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,8 +63,6 @@ public class LogLineProcessorTest {
 
 		List<LogEvent> logEvents = logEventCaptor.getAllValues();
 		List<Long> durations = durationCaptor.getAllValues();
-		System.out.println(logEvents);
-		System.out.println(durations);
 		assertEquals(Arrays.asList(5L, 8L), durations);
 
 		// First Event which is more than 4 ms
@@ -77,6 +76,12 @@ public class LogLineProcessorTest {
 		assertNull(logEvents.get(1).getType());
 	}
 
+	@Test
+	public void verifyLogEntriesWithinThresholdLimits() throws IOException {
+		Files.lines(Paths.get("src/test/resources/sample_all_within_limits.log")).forEach(logLine -> logLineProcessor.process(logLine));
+		verify(dbService, times(0)).save(Mockito.any(), Mockito.any());
+	}
+	
 	@Test
 	public void failedParsingDoesnotThrowException() throws IOException {
 		String logLine = "()()INVALID_JSON()()";
