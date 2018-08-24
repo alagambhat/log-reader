@@ -17,14 +17,14 @@ import com.log.reader.repository.LogEventRepository;
 public class ReaderController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReaderController.class);
-	
+
 	@Autowired
 	LogEventRepository logEventRepository;
 
 	@GetMapping("/all")
 	public List<Event> fetchAll() {
 		final List<Event> result = logEventRepository.findAll();
-		logger.debug("Fetch all returned {} results", result.size());
+		logger.info("Fetched results count: {}", result.size());
 		return result;
 	}
 
