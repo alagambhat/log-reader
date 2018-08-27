@@ -32,10 +32,11 @@ public class LogLineProcessor implements ApplicationListener<LogProcessEvent> {
 
 	@Override
 	public void onApplicationEvent(LogProcessEvent event) {
+		logger.trace("Received {}", event);
 		process(event.getMessage());
 	}
 
-	public LogEvent process(String logLine) {
+	public LogEvent process(final String logLine) {
 		try {
 			final LogEvent logEntry = JsonConverter.toObject(logLine, LogEvent.class);
 			logger.debug("logLine {} is mapped to {}", logLine, logEntry);
@@ -50,7 +51,7 @@ public class LogLineProcessor implements ApplicationListener<LogProcessEvent> {
 	/**
 	 * Checks if the delay is more than threshold. If so make an entry in the DB.
 	 */
-	public void verifyAndAct(LogEvent entry) {
+	public void verifyAndAct(final LogEvent entry) {
 		final LogEvent previousValue = hashMap.putIfAbsent(entry.getId(), entry);
 		if (previousValue != null) {
 			logger.trace("Match found: {}", previousValue);

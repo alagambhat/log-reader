@@ -2,7 +2,7 @@ package com.log.reader.log.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LogEvent {
 	private final String id;
 	private final String state;
@@ -53,5 +53,11 @@ public class LogEvent {
 		}
 
 		return this.id.equals(((LogEvent) obj).id);
+	}
+
+	@Override
+	public String toString() {
+		return "LogEvent [id=" + id + ", state=" + state + ", timestamp=" + timestamp + ", type=" + type + ", host="
+				+ host + "]";
 	}
 }

@@ -15,7 +15,6 @@ public class FileReader {
 
 	private static final Logger logger = LoggerFactory.getLogger(FileReader.class);
 
-	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
 
 	@Autowired
@@ -26,7 +25,10 @@ public class FileReader {
 	public void read(String filePath) throws IOException {
 		try {
 			Files.lines(Paths.get(filePath))
-					.forEach(logLine -> applicationEventPublisher.publishEvent(new LogProcessEvent(this, logLine)));
+					.forEach(logLine -> {
+						applicationEventPublisher.publishEvent(new LogProcessEvent(this, logLine));
+						logger.trace("Published event with message: {}", logLine);
+					});
 		} catch (IOException e) {
 			logger.error("Exception while reading the file: {}", filePath, e);
 			throw e;

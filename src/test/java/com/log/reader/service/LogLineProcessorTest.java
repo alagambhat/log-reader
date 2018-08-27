@@ -2,6 +2,8 @@ package com.log.reader.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -15,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,13 +79,14 @@ public class LogLineProcessorTest {
 	public void verifyLogEntriesWithinThresholdLimits() throws IOException {
 		Files.lines(Paths.get("src/test/resources/sample_all_within_limits.log"))
 				.forEach(logLine -> logLineProcessor.process(logLine));
-		verify(logEventRepository, times(0)).save(Mockito.any());
+		verify(logEventRepository, never()).save(any());
 	}
 
 	@Test
 	public void failedParsingDoesnotThrowException() throws IOException {
 		String logLine = "()()INVALID_JSON()()";
 		LogEvent result = logLineProcessor.process(logLine);
+		verify(logEventRepository, never()).save(any());
 		assertNull(result);
 	}
 

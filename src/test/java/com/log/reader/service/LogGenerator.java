@@ -23,7 +23,7 @@ public class LogGenerator {
 			int entrycount = 0;
 			int thresholdExceededCount = 0;
 
-			for (int id = 100; id < 5000; id++) {
+			for (int id = 100; id < 10000; id++) {
 				int randomNum = rand.nextInt(10) + 2;
 
 				if (randomNum > THRESHOLD) {
